@@ -18,6 +18,19 @@ end
 
 Parse a word line in CoNLLU format. The word line should have 10 fields separated by tab
 characters. The function validates the word line and returns a CoNLLUWord object.
+
+```julia
+julia> word_line = wrd="13\te-mail\te-mail\tNOUN\tNN\tNumber=Sing\t9\tconj\t9:conj:and|15:compound\tSpaceAfter=No"
+
+julia> r = CoNLLUWord(word_line)
+CoNLLUWord(13, "e-mail", "e-mail", "NOUN", "NN", "Number=Sing", "9", "conj", "9:conj:and|15:compound", "SpaceAfter=No")
+
+julia> getfield(r, :lemma)
+"e-mail"
+
+julia> getfield(r, :upos)
+"NOUN"
+```
 """
 function CoNLLUWord(str::AbstractString)::CoNLLUWord
     isvalidword(str) || error("Invalid word line $str")
@@ -81,14 +94,15 @@ HEAD fields as explained below.
 
 The fields must additionally meet the following constraints:
 
-Fields must not be empty.
-Fields other than FORM, LEMMA, and MISC must not contain space characters.
-Underscore (_) is used to denote unspecified values in all fields except ID. Note that 
-no format-level distinction is made for the rare cases where the FORM or LEMMA is the 
+- Fields must not be empty.
+- Fields other than `FORM`, `LEMMA`, and `MISC` must not contain space characters.
+- Underscore (_) is used to denote unspecified values in all fields except `ID`. 
+
+Note that no format-level distinction is made for the rare cases where the `FORM` or `LEMMA` is the 
 literal underscore – processing in such cases is application-dependent. Further, in UD 
-treebanks the UPOS, HEAD, and DEPREL columns are not allowed to be left unspecified except 
-in multiword tokens, where all must be unspecified, and empty nodes, where UPOS is 
-optional and HEAD and DEPREL must be unspecified. The enhanced DEPS annotation is optional 
+treebanks the `UPOS`, `HEAD`, and `DEPREL` columns are not allowed to be left unspecified except 
+in multiword tokens, where all must be unspecified, and empty nodes, where `UPOS` is 
+optional and `HEAD` and `DEPREL` must be unspecified. The enhanced `DEPS` annotation is optional 
 in UD treebanks, but if it is provided, it must be provided for all sentences in the treebank.
 """
 struct CoNLLUSentence
